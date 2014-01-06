@@ -1,0 +1,3 @@
+recursive-include avatar *
+recursive-include binary_translator *
+include README.rst
