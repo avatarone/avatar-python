@@ -1,0 +1,7 @@
+#ifndef _LLVM_ARM_INSTRUCTIONS_H
+#define _LLVM_ARM_INSTRUCTIONS_H
+
+#define GET_INSTRINFO_ENUM
+#include "ARMBaseInfo.h"
+
+#endif /* _LLVM_ARM_INSTRUCTIONS_H */
