@@ -110,10 +110,28 @@ class S2EEmulator(Emulator):
                 time.sleep(2) #Wait a bit for the S2E process to start
                 self._remote_memory_interface.start()
 
-            self._gdb_interface = GdbDebugger(gdb_executable = "arm-none-eabi-gdb")
+            try:
+                gdb_path = self._configuration._s2e_configuration["emulator_gdb_path"]
+            except KeyError:
+                gdb_path = "arm-none-eabi-gdb"
+                log.warn("Using default gdb executable path: %s" % gdb_path)
+
+            self._gdb_interface = GdbDebugger(gdb_executable = gdb_path)
             self._gdb_interface.set_async_message_handler(self.handle_gdb_async_message)
-            time.sleep(5)
-            self._gdb_interface.connect(("tcp", "localhost", "%d" % self._configuration.get_s2e_gdb_port()))
+            count = 10
+            while count != 0:
+                try:
+                    log.debug("Trying to connect to emulator.")
+                    self._gdb_interface.connect(("tcp", "localhost", "%d" % self._configuration.get_s2e_gdb_port()))
+                    break
+                except:
+                    count -= 1
+                    if count > 0:
+                        log.warning("Failed to connect to emulator, retrying.")
+                    time.sleep(3)
+            if count == 0:
+                raise Exception("Failed to connect to emulator. Giving up!")
+            log.info("Successfully connected to emulator.")
             self._is_s2e_running.set()
             self._s2e_process.wait()
         except KeyboardInterrupt:
