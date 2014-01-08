@@ -107,6 +107,9 @@ class GDB(Thread):
                         # self.results_queue.put(GDB.MSG_TERM)
                         debug('[RX] (gdb)')
                     else:
+                        if msg_line == '^done':
+                            msg = []
+                            break
                         try:
                             self.add_msg(msg_line)
                         except Exception:
