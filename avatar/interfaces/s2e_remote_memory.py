@@ -61,20 +61,25 @@ class S2ERemoteMemoryInterface(RemoteMemoryInterface):
             if not sock:
                 sys.exit(1)
             
-            buffer = ""
             while not self._stop.is_set():
-                while not '\n' in buffer:
+                buffer = ""
+                while True:
                     if self._stop.is_set():
                         return
                     (rd, _, _) = select([sock], [], [], 1)
                     if rd:
                         buffer += sock.recv(1).decode(encoding = 'ascii')
-                        
-                token = buffer.split('\n')[0]
-                buffer = buffer[buffer.find('\n') + 1:]
-                
+                        try:
+                            # this is outrageous
+                            request = json.loads(buffer)
+                            log.debug('buf: %s' % repr(buffer))
+                            buffer = "" # reset the buffer if we were able to parse it
+                            request["cmd"] # wait for cmd?
+                            break
+                        except:
+                            # wait for more data
+                            pass
                 try:
-                    request = json.loads(token)
                     if request["cmd"] == "read":
                         params = {"address" : int(request["params"]["address"], 16),
                                   "size": int(request["params"]["size"], 16),
