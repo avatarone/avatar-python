@@ -110,7 +110,13 @@ class S2EEmulator(Emulator):
                 time.sleep(2) #Wait a bit for the S2E process to start
                 self._remote_memory_interface.start()
 
-            self._gdb_interface = GdbDebugger(gdb_executable = "arm-none-eabi-gdb")
+            try:
+                gdb_path = self._configuration._s2e_configuration["emulator_gdb_path"]
+            except KeyError:
+                gdb_path = "arm-none-eabi-gdb"
+                log.warn("Using default gdb executable path: %s" % gdb_path)
+
+            self._gdb_interface = GdbDebugger(gdb_executable = gdb_path)
             self._gdb_interface.set_async_message_handler(self.handle_gdb_async_message)
             count = 10
             while count != 0:
