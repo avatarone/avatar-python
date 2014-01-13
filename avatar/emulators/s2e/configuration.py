@@ -98,9 +98,29 @@ class S2EConfiguration():
         elif plugin == "RemoteMemory":
             plug_conf = self._s2e_configuration["plugins"]["RemoteMemory"]
             lua = []
-            lua.append("verbose = %s" % (("verbose" in plug_conf and plug_conf["verbose"]) and "true" or "false"))
-            lua.append("listen = \"%s:%d\"" % self._s2e_remote_memory_plugin_sockaddr)
-            return ",\n".join(lua)
+            lua.append("verbose = %s," % (("verbose" in plug_conf and plug_conf["verbose"]) and "true" or "false"))
+            if "listen" in plug_conf:
+                # using the listen config from the main python config file
+                host, port = plug_conf["listen"].split(':')
+                self._s2e_remote_memory_plugin_sockaddr = (host, int(port))
+            lua.append("listen = \"%s:%d\"," % self._s2e_remote_memory_plugin_sockaddr)
+            lua.append("ranges = {")
+            ranges = []
+            for (range_name, mem_range) in plug_conf["ranges"].items():
+                ranges.append(
+                        """
+                        \t%s = {
+                        \t\taddress = 0x%x,
+                        \t\tsize = 0x%x,
+                        \t\taccess = {%s}
+                        \t}
+                    """ % (range_name,
+                        mem_range["address"],
+                        mem_range["size"],
+                        ", ".join(["\"%s\"" % x for x in mem_range["access"]])))
+            lua.append(",\n".join(ranges))
+            lua.append("}")
+            return "\n".join(lua)
         elif plugin == "MemoryInterceptorMediator":
             plug_conf = self._s2e_configuration["plugins"]["MemoryInterceptorMediator"]
             lua = []
