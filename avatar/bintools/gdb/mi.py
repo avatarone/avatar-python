@@ -7,7 +7,7 @@ import select
 import errno
 from logging import debug, info, error, basicConfig, exception, DEBUG #, INFO
 
-from bintools.gdb.mi_parser import parse, Stream, Async, Result
+from avatar.bintools.gdb.mi_parser import parse, Stream, Async, Result
 
 
 class Debugger:

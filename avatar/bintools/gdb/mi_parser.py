@@ -1,5 +1,5 @@
 from re import compile, search
-from bintools.gdb.parse_stream import ParseStream, ParseError
+from avatar.bintools.gdb.parse_stream import ParseStream, ParseError
 
 
 ESCAPE_CHARS = {'n':'\n', '\\':'\\', '"':'"', 't':'\t'}

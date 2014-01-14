@@ -5,9 +5,9 @@ Created on Jun 24, 2013
 '''
 from avatar.targets.target import Target
 import logging
-from bintools.gdb.gdb_debugger import GdbDebugger
+from avatar.bintools.gdb.gdb_debugger import GdbDebugger
 from avatar.system import EVENT_RUNNING, EVENT_STOPPED, EVENT_BREAKPOINT
-from bintools.gdb.mi_parser import Async
+from avatar.bintools.gdb.mi_parser import Async
 from avatar.debuggable import Breakpoint
 from queue import Queue
 

@@ -8,8 +8,8 @@ import time
 from avatar.util.processes import find_processes
 import signal
 import threading
-from bintools.gdb.gdb_debugger import GdbDebugger
-from bintools.gdb.mi_parser import Async
+from avatar.bintools.gdb.gdb_debugger import GdbDebugger
+from avatar.bintools.gdb.mi_parser import Async
 from avatar.system import EVENT_RUNNING, EVENT_STOPPED, EVENT_BREAKPOINT, EVENT_END_STEPPING
 from avatar.debuggable import Breakpoint
 from queue import Queue

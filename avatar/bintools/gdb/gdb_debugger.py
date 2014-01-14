@@ -3,9 +3,9 @@ Created on Jul 1, 2013
 
 @author: Jonas Zaddach <zaddach@eurecom.fr>
 '''
-from bintools.gdb.mi import GDB, Debugger
+from avatar.bintools.gdb.mi import GDB, Debugger
 import logging
-from bintools.gdb.mi_parser import Stream
+from avatar.bintools.gdb.mi_parser import Stream
 
 log = logging.getLogger(__name__)
 
