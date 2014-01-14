@@ -37,10 +37,23 @@ def halted(fn):
 
 
 class OpenocdTarget(Target):
+    """
+    This module includes the logic to talk with OpenOCD in order to 
+    perform low-level actions on the target.
+    Methods are split in three classes, according to their decorator:
+        * paused: stop the target before performing actions, then resume it
+        * halted: stop the target to perform actions
+        * raw: plain naked actions
+    """
+    
     def __init__(self, sockaddr):
         self._sockaddress = sockaddr
         self._prompt = telnetlib.Telnet()
         self.start()
+
+###################################################################
+## Raw naked methods
+###################################################################
         
     def start(self):
         """ Start the telnet session to OpenOCD """
@@ -58,7 +71,11 @@ class OpenocdTarget(Target):
         self.get_output()
     
     def get_output(self, to=0):
-        """ Get the output of last command """
+        """
+        Get the output of last command 
+        :param to: timeout in seconds (optional)
+        :type to: int
+        """
         if to == 0:
             out = str(self._prompt.read_until(b"> "))
         else:
@@ -74,55 +91,41 @@ class OpenocdTarget(Target):
         """ Resume the target """
         self.raw_cmd("resume", False)
 
-    @paused
-    def put_bp(self, addr : "str 0xNNNNNNNN"):
-        """ Set a breakpoint """
-		# XXX: hardcoded: thumb, hw breakpoint
-        self.raw_cmd("bp %s 2 hw" % addr)
-    
-    @paused
-    def remove_bp(self, addr : "str 0xNNNNNNNN"):
-        """ Remove a breakpoint """
-        self.remove_raw_bp(addr)
-
-    def remove_raw_bp(self, addr : "str 0xNNNNNNNN"):
-        """ Remove a breakpoint """
-        self.raw_cmd("rbp %s" % addr)
-    
     def raw_cmd(self, cmd, is_log=True):
-        """ Send a raw command to OpenOCD """
+        """
+        Send a raw command to OpenOCD 
+        :param cmd: an OpenOCD command
+        :type cmd: str
+        :param is_log: whether to log command output (optional, default True)
+        :type is_log: bool
+        """
         self._prompt.write(str(cmd+'\n').encode("ascii"))
         out=self.get_output()
         if is_log:
             log.info(out)
         return out
-    
-    @paused
-    def get_register(self, regname : "str") -> "str 0xNNNNNNNN":
-        """ Get the value of single registers """
-        return self.get_raw_register(regname)
+
+    def remove_raw_bp(self, addr : "str 0xNNNNNNNN"):
+        """
+        Remove a breakpoint        
+        :param addr: address literal in hexadecimal
+        :type addr: str
+        """
+        self.raw_cmd("rbp %s" % addr)
     
     def get_raw_register(self, regname : "str")-> "str 0xNNNNNNNN":
-        """ Register reader, undecorated """
+        """
+        Read a single register, allowed values within ARM_REGISTERS
+        :param regname: register name (see ARM_REGISTERS)
+        :type regname: str
+        :return: value register in hexadecimal
+        :rtype: str
+        """
         assert(regname in ARM_REGISTERS)
         value=self.raw_cmd("reg " + regname, False).split(": ")[-1]
         # XXX
         return value.split("\\")[0]
-
-    @halted
-    def dump_all_registers(self)-> "dict{str: str 0xNNNNNNNN}":
-        """ Loop over all available registers and dump their content """
-        out = {}
-        # Flush session input
-        self.get_output(2)
-        for i in ARM_REGISTERS:
-            val = self.get_raw_register(i)
-            try:
-                out[i] = int(val, 0) # thanks json
-            except Exception as ex:
-                log.exception("%s ignored, read value was «%s»" % (i, val))
-        return out
-            
+    
     def initstate(self, cfg : "dict of str"):
         """ Change S2E configurable machine initial setup"""
         assert("machine_configuration" in cfg)
@@ -133,17 +136,68 @@ class OpenocdTarget(Target):
         if "pc" in st:
             cfg["machine_configuration"]["entry_address"] = st["pc"]            
         return cfg
-    
-#    def read_typed_memory(self, address, size):
-        
-            
-#    def read_untyped_memory(self, address, length):
-    
-#    def write_typed_memory(self, address, size, value):
-        
-#    def write_untyped_memory(self, address, data):
 
+###################################################################
+## Paused methods
+###################################################################
+
+    @paused
+    def put_bp(self, addr : "str 0xNNNNNNNN"):
+        """
+        Pause the target, put a breakpoint, then resume it
+        :param addr: address literal in hexadecimal
+        :type addr: str
+        """
+		# XXX: hardcoded: thumb, hw breakpoint
+        self.raw_cmd("bp %s 2 hw" % addr)
     
+    @paused
+    def remove_bp(self, addr : "str 0xNNNNNNNN"):
+        """
+        Pause the target, remove a breakpoint, the resume it
+        :param addr: address literal in hexadecimal
+        :type addr: str
+        """
+        self.remove_raw_bp(addr)
+    
+    @paused
+    def get_register(self, regname : "str") -> "str 0xNNNNNNNN":
+        """
+        Pause the target, read a single register, then resume it
+        :param regname: register name (allowed values within ARM_REGISTERS)
+        :type regname: str
+        :return: value register in hexadecimal
+        :rtype: str
+        """
+        return self.get_raw_register(regname)
+
+###################################################################
+## Halted methods
+###################################################################
+
+    @halted
+    def dump_all_registers(self)-> "dict{str: str 0xNNNNNNNN}":
+        """
+        Halt the target, loop over all available registers 
+        and dump their content
+        :return: dict of regname->value
+        :rtype: dict of str->str
+        """
+        out = {}
+        # Flush session input
+        self.get_output(2)
+        for i in ARM_REGISTERS:
+            val = self.get_raw_register(i)
+            try:
+                out[i] = int(val, 0) # thanks json
+            except Exception as ex:
+                log.exception("%s ignored, read value was «%s»" % (i, val))
+        return out
+
+###################################################################
+## Class methods
+###################################################################
+        
     @classmethod
     def from_str(cls, sockaddr_str: "str, proto:addr:port"):
         """ Static factory """
