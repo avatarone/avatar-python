@@ -3,7 +3,7 @@ Created on May 2, 2013
 
 @author: Jonas Zaddach <zaddach@eurecom.fr>
 '''
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket
 import collections
