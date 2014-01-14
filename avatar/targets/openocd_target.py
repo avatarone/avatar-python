@@ -104,6 +104,17 @@ class OpenocdTarget(Target):
         if is_log:
             log.info(out)
         return out
+        
+    def put_raw_bp(self, addr : "str 0xNNNNNNNN", size : "int"):
+        """
+        Put a breakpoint        
+        :param addr: address literal in hexadecimal
+        :type addr: str
+        :param size: brakpoint size
+        :type size: integer
+        """
+		# FIXME: hardcoded hw breakpoint
+        self.raw_cmd("bp %s %d hw" % (addr, size))
 
     def remove_raw_bp(self, addr : "str 0xNNNNNNNN"):
         """
