@@ -54,5 +54,12 @@ class EmulatorTargetCallProxy():
         
         for monitor in self._monitor_hooks["emulator_post_write_request"]:
             monitor.emulator_post_write_request(params)
-        
-        
+
+    def handle_emulator_set_cpu_state_request(self, params):
+        # this function sets the CPU state on the target device
+        assert(self._target)
+
+        # TODO: fire events?
+        print('call_proxy %s' % (repr(params)))
+        self._target.set_register("r0", 0xabcd1234)
+        print('reg back %s' % self._target.get_register("r0"))

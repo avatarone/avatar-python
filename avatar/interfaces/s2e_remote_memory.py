@@ -12,12 +12,16 @@ class RemoteMemoryInterface(object):
     def __init__(self):
         self._read_handler = None
         self._write_handler = None
+        self._set_cpu_state_handler = None
         
     def set_read_handler(self, listener):
         self._read_handler = listener
         
     def set_write_handler(self, listener):
         self._write_handler = listener
+
+    def set_set_cpu_state_handler(self, listener):
+        self._set_cpu_state_handler= listener
         
     def _handle_read(self, params):
         assert(self._read_handler) #Read handler must be installed when this is called
@@ -30,6 +34,11 @@ class RemoteMemoryInterface(object):
         assert(self._write_handler) #Write handler must be installed when this is called
 
         self._write_handler(params)
+
+    def _handle_set_cpu_state(self, params):
+        assert(self._set_cpu_state_handler)
+
+        self._set_cpu_state_handler(params)
 
 class S2ERemoteMemoryInterface(RemoteMemoryInterface):
         def __init__(self, sock_address):

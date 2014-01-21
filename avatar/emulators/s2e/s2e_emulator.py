@@ -107,6 +107,7 @@ class S2EEmulator(Emulator):
                 self._remote_memory_interface = S2ERemoteMemoryInterface(self._configuration.get_remote_memory_listen_address())
                 self._remote_memory_interface.set_read_handler(self._notify_read_request_handler)
                 self._remote_memory_interface.set_write_handler(self._notify_write_request_handler)
+                self._remote_memory_interface.set_set_cpu_state_handler(self._notify_set_cpu_state_handler)
                 time.sleep(2) #Wait a bit for the S2E process to start
                 self._remote_memory_interface.start()
 
