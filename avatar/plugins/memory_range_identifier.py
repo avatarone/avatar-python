@@ -6,18 +6,25 @@ from functools import reduce
 
 log = logging.getLogger("avatar")
 
-
-
 class MemoryRangeIdentifier(AvatarPlugin):
+    """
+    A plugin to identify memory regions, based on access type
+    """
+
     def __init__(self, system, page_size = 512):
         super(self, AvatarPlugin).__init__(system)
         self._page_size = page_size
         self._pages = {}
         
-    def init(self):
+    def init(self, **kwargs):
         pass
         
-    def start(self):
+    def start(self, **kwargs):
+        self._system.register_event_listener(self._process_event)
+        pass
+
+    def stop(self, **kwargs):
+        self._system.unregister_event_listener(self._process_event)
         pass
         
     def _get_page(self, address):
