@@ -67,3 +67,9 @@ class EmulatorTargetCallProxy():
                 continue
             value = int(params["cpu_state"][reg], 16)
             self._target.set_register(reg, value)
+
+    def handle_emulator_continue_request(self, params):
+        assert(self._target)
+
+        self._target.cont()
+

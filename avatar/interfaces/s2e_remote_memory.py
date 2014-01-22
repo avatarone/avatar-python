@@ -13,6 +13,7 @@ class RemoteMemoryInterface(object):
         self._read_handler = None
         self._write_handler = None
         self._set_cpu_state_handler = None
+        self._continue_handler = None
         
     def set_read_handler(self, listener):
         self._read_handler = listener
@@ -22,6 +23,9 @@ class RemoteMemoryInterface(object):
 
     def set_set_cpu_state_handler(self, listener):
         self._set_cpu_state_handler= listener
+
+    def set_continue_handler(self, listener):
+        self._continue_handler= listener
         
     def _handle_read(self, params):
         assert(self._read_handler) #Read handler must be installed when this is called
@@ -39,6 +43,11 @@ class RemoteMemoryInterface(object):
         assert(self._set_cpu_state_handler)
 
         self._set_cpu_state_handler(params)
+
+    def _handle_continue(self, params):
+        assert(self._continue_handler)
+
+        self._continue_handler(params)
 
 class S2ERemoteMemoryInterface(RemoteMemoryInterface):
         def __init__(self, sock_address):
@@ -107,6 +116,15 @@ class S2ERemoteMemoryInterface(RemoteMemoryInterface):
                         self._handle_set_cpu_state(params)
                         json_string = json.dumps({"reply":"done"}) + \
                                 "\n"
+                        sock.sendall(json_string.encode(encoding =
+                            'ascii'))
+                    elif request["cmd"] == "continue":
+                        params = None
+                        self._handle_continue(params)
+                        # here we should wait for the breakpoint to be
+                        # hit
+                        #json_string = json.dumps({"reply":"done"}) + \
+                        #        "\n"
                         sock.sendall(json_string.encode(encoding =
                             'ascii'))
                     else:

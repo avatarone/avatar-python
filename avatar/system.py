@@ -113,6 +113,7 @@ class System():
         self._emulator.set_read_request_handler(self._call_proxy.handle_emulator_read_request)
         self._emulator.set_write_request_handler(self._call_proxy.handle_emulator_write_request)
         self._emulator.set_set_cpu_state_request_handler(self._call_proxy.handle_emulator_set_cpu_state_request)
+        self._emulator.set_continue_request_handler(self._call_proxy.handle_emulator_continue_request)
         self._call_proxy.set_target(self._target)
         
         self._target.start()
