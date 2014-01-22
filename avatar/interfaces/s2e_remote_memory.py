@@ -102,6 +102,15 @@ class S2ERemoteMemoryInterface(RemoteMemoryInterface):
                                   "value": int(request["params"]["value"], 16),
                                   "cpu_state": request["cpu_state"]}
                         self._handle_write(params)
+                    elif request["cmd"] == "set_cpu_state":
+                        params = {"cpu_state": request["cpu_state"]}
+                        self._handle_set_cpu_state(params)
+                        json_string = json.dumps({"reply":"done"}) + \
+                                "\n"
+                        sock.sendall(json_string.encode(encoding =
+                            'ascii'))
+                    else:
+                        log.error("Unknown cmd %s" % (request['cmd']))
                 except Exception:
                     log.exception("Error in remote memory interface")
                     

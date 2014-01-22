@@ -60,6 +60,10 @@ class EmulatorTargetCallProxy():
         assert(self._target)
 
         # TODO: fire events?
-        print('call_proxy %s' % (repr(params)))
-        self._target.set_register("r0", 0xabcd1234)
-        print('reg back %s' % self._target.get_register("r0"))
+
+        for reg in params["cpu_state"]:
+            if reg == "cpsr":
+                # skip cpsr register
+                continue
+            value = int(params["cpu_state"][reg], 16)
+            self._target.set_register(reg, value)
