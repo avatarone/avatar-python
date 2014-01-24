@@ -77,14 +77,14 @@ class EmulatorTargetCallProxy():
 
         for r in range(13):
             val = self._target.get_register("r"+str(r))
-            ret["r"+str(r)] = hex(val)
+            ret["cpu_state_"+"r"+str(r)] = hex(val)
         val = self._target.get_register("sp")
-        ret["r13"] = hex(val)
+        ret["cpu_state_r13"] = hex(val)
         val = self._target.get_register("lr")
-        ret["r14"] = hex(val)
+        ret["cpu_state_r14"] = hex(val)
         val = self._target.get_register("pc")
-        ret["pc"] = hex(val)
-        return {"cpu_state":ret}
+        ret["cpu_state_pc"] = hex(val)
+        return ret
 
     def handle_emulator_continue_request(self, params):
         assert(self._target)
