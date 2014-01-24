@@ -13,6 +13,7 @@ class RemoteMemoryInterface(object):
         self._read_handler = None
         self._write_handler = None
         self._set_cpu_state_handler = None
+        self._get_cpu_state_handler = None
         self._continue_handler = None
         
     def set_read_handler(self, listener):
@@ -23,6 +24,9 @@ class RemoteMemoryInterface(object):
 
     def set_set_cpu_state_handler(self, listener):
         self._set_cpu_state_handler= listener
+
+    def set_get_cpu_state_handler(self, listener):
+        self._get_cpu_state_handler= listener
 
     def set_continue_handler(self, listener):
         self._continue_handler= listener
@@ -43,6 +47,11 @@ class RemoteMemoryInterface(object):
         assert(self._set_cpu_state_handler)
 
         self._set_cpu_state_handler(params)
+
+    def _handle_get_cpu_state(self, params):
+        assert(self._get_cpu_state_handler)
+
+        return self._get_cpu_state_handler(params)
 
     def _handle_continue(self, params):
         assert(self._continue_handler)
@@ -116,6 +125,12 @@ class S2ERemoteMemoryInterface(RemoteMemoryInterface):
                         self._handle_set_cpu_state(params)
                         json_string = json.dumps({"reply":"done"}) + \
                                 "\n"
+                        sock.sendall(json_string.encode(encoding =
+                            'ascii'))
+                    elif request["cmd"] == "get_cpu_state":
+                        params = None
+                        ret = self._handle_get_cpu_state(params)
+                        json_string = json.dumps({"reply":ret}) + "\n"
                         sock.sendall(json_string.encode(encoding =
                             'ascii'))
                     elif request["cmd"] == "continue":

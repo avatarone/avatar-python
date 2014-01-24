@@ -68,6 +68,24 @@ class EmulatorTargetCallProxy():
             value = int(params["cpu_state"][reg], 16)
             self._target.set_register(reg, value)
 
+    def handle_emulator_get_cpu_state_request(self, params):
+        # this function gets the CPU state on the target device
+        assert(self._target)
+
+        # TODO: fire events?
+        ret = {}
+
+        for r in range(13):
+            val = self._target.get_register("r"+str(r))
+            ret["r"+str(r)] = hex(val)
+        val = self._target.get_register("sp")
+        ret["r13"] = hex(val)
+        val = self._target.get_register("lr")
+        ret["r14"] = hex(val)
+        val = self._target.get_register("pc")
+        ret["pc"] = hex(val)
+        return {"cpu_state":ret}
+
     def handle_emulator_continue_request(self, params):
         assert(self._target)
 
