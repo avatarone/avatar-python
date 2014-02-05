@@ -110,6 +110,7 @@ class S2EEmulator(Emulator):
                 self._remote_memory_interface.set_set_cpu_state_handler(self._notify_set_cpu_state_handler)
                 self._remote_memory_interface.set_get_cpu_state_handler(self._notify_get_cpu_state_handler)
                 self._remote_memory_interface.set_continue_handler(self._notify_continue_handler)
+                self._remote_memory_interface.set_get_checksum_handler(self._system.get_target().get_checksum)
                 time.sleep(2) #Wait a bit for the S2E process to start
                 self._remote_memory_interface.start()
 

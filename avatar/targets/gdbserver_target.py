@@ -83,6 +83,8 @@ class GdbserverTarget(Target):
 
     def execute_gdb_command(self, cmd):
         return self._gdb_interface.execute_gdb_command(cmd)
+    def get_checksum(self, addr, size):
+        return self._gdb_interface.get_checksum(addr, size)
         
     def stop(self):
         pass
@@ -114,6 +116,7 @@ class GdbserverTarget(Target):
         evt["source"] = "target"
         self._system.post_event(evt)
     
+
     @classmethod
     def from_str(cls, sockaddr_str):
         assert(sockaddr_str.startswith("tcp:"))

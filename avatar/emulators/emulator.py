@@ -11,6 +11,7 @@ class Emulator(Debuggable):
         self._set_cpu_state_handler = None
         self._get_cpu_state_handler = None
         self._continue_handler = None
+        self._get_checksum_handler = None
         
     def set_read_request_handler(self, handler):
         self._read_handler = handler
@@ -26,6 +27,9 @@ class Emulator(Debuggable):
 
     def set_continue_request_handler(self, handler):
         self._continue_handler = handler
+
+    def set_get_checksum_request_handler(self, handler):
+        self._get_checksum_handler = handler
 
     def _notify_read_request_handler(self, params):
         self._system.post_event({"source": "emulator", 
@@ -60,4 +64,10 @@ class Emulator(Debuggable):
         assert(self._continue_handler)
 
         return self._continue_handler(params)
+
+    def _notify_get_checksum_handler(self, params):
+        # TODO: we don't have a notify event
+        assert(self._get_checksum_handler)
+
+        return self._get_checksum_handler(params)
 

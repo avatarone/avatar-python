@@ -91,3 +91,12 @@ class EmulatorTargetCallProxy():
 
         self._target.cont()
 
+    def handle_emulator_get_checksum_request(self, params):
+        assert(self._target)
+
+        cmd = "-gdb-show remote checksum %s %s" % \
+                (hex(params['address'])[2:], params['size'][2:])
+        return self._target.execute_gdb_command(cmd)
+        #return self._target.get_checksum(\
+        #        params['address'], params['size'])
+
