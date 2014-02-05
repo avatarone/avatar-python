@@ -139,7 +139,8 @@ class S2ERemoteMemoryInterface(RemoteMemoryInterface):
                     elif request["cmd"] == "get_cpu_state":
                         params = None
                         ret = self._handle_get_cpu_state(params)
-                        json_string = json.dumps({"reply":ret}) + "\n"
+                        ret = dict(list(ret.items()) + list({"reply":"get_cpu_state"}.items()))
+                        json_string = json.dumps(ret) + "\n"
                         sock.sendall(json_string.encode(encoding =
                             'ascii'))
                     elif request["cmd"] == "continue":
