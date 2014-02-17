@@ -7,7 +7,7 @@ import subprocess
 
 def get_process_list():
     processes = []
-    ps_output = subprocess.check_output(["ps", "-A", "-w", "-w", "-o", "pid,cmd"])
+    ps_output = subprocess.check_output(["ps", "-A", "-w", "-w", "-o", "pid", "-o", "command"])
     ps_output = ps_output.decode('latin-1')
     for line in ps_output.split("\n")[1:]:
         line = line.strip()
