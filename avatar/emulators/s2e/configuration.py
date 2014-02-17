@@ -155,7 +155,9 @@ class S2EConfiguration():
         This method returns the absolute path to S2E binary.
         """
         # explicit binary path in config
-        if "s2e_binary" in self._s2e_configuration and self._s2e_configuration["s2e_binary"]:
+        if "QEMU_S2E" in os.environ:
+            return os.environ["QEMU_S2E"]
+        elif "s2e_binary" in self._s2e_configuration and self._s2e_configuration["s2e_binary"]:
             return self._s2e_configuration["s2e_binary"]
         # fallback, architecture specific
         elif arch == "arm" and "s2e_debug" in self._avatar_configuration and self._avatar_configuration["s2e_debug"]:
@@ -182,7 +184,7 @@ class S2EConfiguration():
             cmdline.append("--leak-check=full")
           
         # S2E parameters  
-        cmdline.append(self.get_s2e_executable(self._cm_configuration["architecture"], self._cm_configuration["endianness"]))
+        cmdline.append(self.get_s2e_executable(self._cm_configuration["architecture"], "endianness" in self._cm_configuration and self._cm_configuration["endianness"] or "little"))
         cmdline.append("-s2e-config-file")
         cmdline.append(os.path.join(self._output_directory, "s2e_conf.lua"))
         if "verbose" in self._s2e_configuration and self._s2e_configuration["verbose"]:
