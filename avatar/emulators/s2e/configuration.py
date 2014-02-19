@@ -203,7 +203,7 @@ class S2EConfiguration():
             cmdline.append("-S")
         self._qemu_configuration["gdb"] = "tcp::%d,server" % get_random_free_port()
         cmdline.append("-gdb")
-        cmdline.append("tcp::%d,server" % self._s2e_gdb_sockaddr[1])
+        cmdline.append("tcp:127.0.0.1:%d,server" % self._s2e_gdb_sockaddr[1])
         if "append" in self._qemu_configuration:
             for val in self._qemu_configuration["append"]:
                 cmdline.append(val)
