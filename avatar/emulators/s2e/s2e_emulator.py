@@ -59,9 +59,8 @@ class S2EEmulator(Emulator):
     def start(self):
         s2e_processes = find_processes(self._cmdline[0])
         if s2e_processes:
-            log.warn("There are still S2E instances running, killing them ...")
-            for proc in s2e_processes:
-                os.kill(proc["pid"], signal.SIGKILL)
+            log.warn("There are still S2E instances running, NOT killing them ...")
+            log.warn("Results might be corrupted if output files are not different")
         log.info("Executing S2E process: %s", " ".join(["'%s'" % x for x in self._cmdline]))
         self._s2e_thread = threading.Thread(target = self.run_s2e_process)
         self._is_s2e_running = threading.Event()
