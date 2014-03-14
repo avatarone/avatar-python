@@ -54,5 +54,49 @@ class EmulatorTargetCallProxy():
         
         for monitor in self._monitor_hooks["emulator_post_write_request"]:
             monitor.emulator_post_write_request(params)
-        
-        
+
+    def handle_emulator_set_cpu_state_request(self, params):
+        # this function sets the CPU state on the target device
+        assert(self._target)
+
+        # TODO: fire events?
+
+        for reg in params["cpu_state"]:
+            if reg == "cpsr":
+                # skip cpsr register
+                continue
+            value = int(params["cpu_state"][reg], 16)
+            self._target.set_register(reg, value)
+
+    def handle_emulator_get_cpu_state_request(self, params):
+        # this function gets the CPU state on the target device
+        assert(self._target)
+
+        # TODO: fire events?
+        ret = {}
+
+        for r in range(13):
+            val = self._target.get_register("r"+str(r))
+            ret["cpu_state_"+"r"+str(r)] = hex(val)
+        val = self._target.get_register("sp")
+        ret["cpu_state_r13"] = hex(val)
+        val = self._target.get_register("lr")
+        ret["cpu_state_r14"] = hex(val)
+        val = self._target.get_register("pc")
+        ret["cpu_state_pc"] = hex(val)
+        return ret
+
+    def handle_emulator_continue_request(self, params):
+        assert(self._target)
+
+        self._target.cont()
+
+    def handle_emulator_get_checksum_request(self, params):
+        assert(self._target)
+
+        cmd = "-gdb-show remote checksum %s %s" % \
+                (hex(params['address'])[2:], params['size'][2:])
+        return self._target.execute_gdb_command(cmd)
+        #return self._target.get_checksum(\
+        #        params['address'], params['size'])
+

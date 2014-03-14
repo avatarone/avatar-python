@@ -50,7 +50,9 @@ class GdbDebugger(Debugger):
         return self._gdb.sync_cmd(cmd, "done")
 
     def execute_gdb_command(self, cmd):
-        return self._gdb.sync_cmd([cmd], "done")
+        if not isinstance(cmd, list):
+            cmd = [cmd]
+        return self._gdb.sync_cmd(cmd, "done")
 
     def write_memory(self, address, size, val):
         str_size = {1: "char", 2: "short", 4: "long"}[size]
@@ -60,6 +62,11 @@ class GdbDebugger(Debugger):
         str_size = {1: "char", 2: "short", 4: "long"}[size]
         result = self._gdb.sync_cmd(["-data-read-memory", "0x%x" % address, "x", "%d" % size, "1", "1"], "done")
         return int(result["memory"][0]["data"][0], 16)
+
+    def get_checksum(self, address, size):
+        result = self._gdb.sync_cmd(["-gdb-show", "remote", "checksum", "%x" % address, "%x" % size], "done")
+        print("And the result is: " + repr(result))
+        return int(result["value"], 10)
 
     def map_register_name(self, reg):
         if not self._register_names:
