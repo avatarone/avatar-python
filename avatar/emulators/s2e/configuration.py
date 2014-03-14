@@ -60,6 +60,7 @@ class S2EConfiguration():
         lua.append("-- Automatically generated Lua script configuration for S2E\n")
         lua.append("-- Do not edit!\n")
         lua.append("\n")
+        lua.append("AVATAR_SRC_ROOT_PATH=\"%s\"\n" % (os.getcwd() + "/../../"))
         lua.append("s2e = {\n")
         lua.append("generate_testcase_on_kill = %s," % (("generate_testcase_on_kill" not in self._s2e_configuration \
                                                         or self._s2e_configuration["generate_testcase_on_kill"]) and "true" or "false"))        
