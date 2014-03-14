@@ -20,7 +20,7 @@ class S2EConfiguration():
         self._avatar_configuration = "avatar_configuration" in config and config["avatar_configuration"] or {}
         self._qemu_configuration = ("qemu_configuration" in config) and config["qemu_configuration"] or {}
         
-        mem_addr = "localhost"
+        mem_addr = "127.0.0.1"
         mem_port = get_random_free_port()
         if not isinstance(self._s2e_configuration["plugins"],OrderedDict):
             log.warn("plugins dictionnary should be ordered (use OrderedDict), s2e should take care of ordering plugins one day !")
@@ -33,7 +33,7 @@ class S2EConfiguration():
         self._s2e_remote_memory_plugin_sockaddr = (mem_addr, mem_port)
         
         #TODO: Test if this is specified in configuration, and use values from config if so
-        self._s2e_gdb_sockaddr = ("localhost", get_random_free_port())
+        self._s2e_gdb_sockaddr = ("127.0.0.1", get_random_free_port())
         
 
     def get_klee_cmdline(self):
