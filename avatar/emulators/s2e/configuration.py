@@ -219,6 +219,10 @@ class S2EConfiguration():
             cmdline.append("-d")
             cmdline.append(",".join(trace_opts))
 
+        if "extra_opts" in self._qemu_configuration:
+            for o in self._qemu_configuration["extra_opts"]:
+                cmdline.append(o)
+
         return cmdline
             
     def write_configurable_machine_configuration_file(self):
