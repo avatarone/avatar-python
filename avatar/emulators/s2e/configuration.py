@@ -52,6 +52,13 @@ class S2EConfiguration():
             if "max-stp-time" in klee_conf:
                 cmdline.append("--max-stp-time=%f" % klee_conf["max-stp-time"])
             cmdline.append("--use-expr-simplifier=%s" % (("use-expr-simplifier" in klee_conf and klee_conf["use-expr-simplifier"]) and "true" or "false"))
+            cmdline.append("--use-concolic-execution=%s" % (("use-concolic-execution" in klee_conf and klee_conf["use-concolic-execution"]) and "true" or "false"))
+            cmdline.append("--print-mode-switch=true")
+            cmdline.append("--concretize-io-address=false")
+            cmdline.append("--concretize-io-writes=true")
+            cmdline.append("--allow-external-sym-calls=false")
+            cmdline.append("--verbose-fork-info=true")
+
         return cmdline
         
         
