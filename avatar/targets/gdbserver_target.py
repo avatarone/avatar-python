@@ -59,13 +59,17 @@ class GdbserverTarget(Target):
         else:
             self.gdb_exec = "/home/zaddach/projects/hdd-svn/gdb/gdb/gdb"
             log.warn("target_gdb_path not defined in avatar configuration, using hardcoded GDB path: %s", self.gdb_exec)
+        if "target_gdb_additional_arguments" in conf["avatar_configuration"]:
+            self.additional_args = conf["avatar_configuration"]["target_gdb_additional_arguments"]
+        else:
+            self.additional_args = []
         self._sockaddress = (sockaddr_str[:sockaddr_str.rfind(":")],
                              int(sockaddr_str[sockaddr_str.rfind(":") + 1:]))
         
     def start(self):
         #TODO: Handle timeout
         if self._verbose: log.info("Trying to connect to target gdb server at %s:%d", self._sockaddress[0], self._sockaddress[1])
-        self._gdb_interface = GdbDebugger(gdb_executable = self.gdb_exec)
+        self._gdb_interface = GdbDebugger(gdb_executable = self.gdb_exec, cwd = ".", additional_args = self.additional_args )
         self._gdb_interface.set_async_message_handler(self.handle_gdb_async_message)
         self._gdb_interface.connect(("tcp", self._sockaddress[0], "%d" % self._sockaddress[1]))
         

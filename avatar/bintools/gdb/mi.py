@@ -5,10 +5,11 @@ from os import read, getcwd
 from os.path import join
 import select
 import errno
-from logging import debug, info, error, basicConfig, exception, DEBUG #, INFO
+from logging import getLogger, debug, info, error, basicConfig, exception, DEBUG #, INFO
 
 from avatar.bintools.gdb.mi_parser import parse, Stream, Async, Result
 
+log = getLogger("GDB-MI")
 
 class Debugger:
     def handle_stream_msg(self, msg):
@@ -24,6 +25,9 @@ class Debugger:
         # changes in the remote target
         pass
 
+class MIProtocolException(Exception):
+    def __init__(self, message):
+        super(self, MIProtocolException).__init__(message)
 
 class GDB(Thread):
     PROMPT = '(gdb)'
@@ -32,10 +36,10 @@ class GDB(Thread):
     MSG_EOF, MSG_TERM = 0, 1
     TERMINATOR = '(gdb) '
     
-    def __init__(self, dbg = None, executable = "gdb", cwd = "."):
+    def __init__(self, dbg = None, executable = "gdb", cwd = ".", additional_args = []):
         Thread.__init__(self)
-        cmd = [executable] + GDB.CMD
-        debug('[CMD] %s' % ' '.join(cmd))
+        cmd = [executable] + GDB.CMD + additional_args
+        log.info("Creating GDB instance: %s" % (" ".join(["\"%s\"" % x for x in cmd]),))
         self.gdb = Popen(cmd, 
                          stdin=PIPE, 
                          stdout=PIPE, 
@@ -68,14 +72,14 @@ class GDB(Thread):
     def get_result(self, t=None):
         msg = self.results_queue.get()
         if t is not None and msg.token != t:
-            raise Exception("Expected token %d, received token %d." % (t, msg.token))
+            raise MIProtocolException("Expected token %d, received token %d." % (t, msg.token))
         return msg
     
     def sync_cmd(self, cmd, klass='done'):
         t = self.send_cmd(cmd)
         r = self.get_result(t)
         if r.klass != klass:
-            raise Exception('Expected "%s" notification, received %s' % (klass, r.klass))
+            raise MIProtocolException('Expected "%s" notification, received %s' % (klass, r.klass))
         return r.results
     
     def run(self):
@@ -91,7 +95,7 @@ class GDB(Thread):
             data = read(self.gdb.stdout.fileno(), 1024).decode(encoding = 'ascii')
             if data == "":
                 if buffer:
-                    raise Exception("Incomplete message: %s" % buffer)
+                    raise MIProtocolException("Incomplete message: %s" % buffer)
                 # self.results_queue.put(GDB.MSG_EOF)
                 debug('[RX] EOF')
                 break
@@ -112,7 +116,7 @@ class GDB(Thread):
                             break
                         try:
                             self.add_msg(msg_line)
-                        except Exception:
+                        except MIProtocolException:
                             exception("Exception while parsing GDB reply: %s" % (msg_line))
                     msg = []
                 else:
