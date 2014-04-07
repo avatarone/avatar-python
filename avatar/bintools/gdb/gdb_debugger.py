@@ -10,11 +10,11 @@ from avatar.bintools.gdb.mi_parser import Stream
 log = logging.getLogger(__name__)
 
 class GdbDebugger(Debugger):
-    def __init__(self, gdb_executable = "gdb", cwd = "."):
+    def __init__(self, gdb_executable = "gdb", cwd = ".", additional_args = []):
         self._async_message_handler = None
         self._stream_handler = None
         self._register_names = None
-        self._gdb = GDB(self, executable = gdb_executable, cwd = cwd)
+        self._gdb = GDB(self, executable = gdb_executable, cwd = cwd, additional_args = additional_args)
   
     def insert_breakpoint(self, 
                      line, 
