@@ -72,9 +72,7 @@ class GdbDebugger(Debugger):
         if not self._register_names:
             #Fetch register names ...
             result = self._gdb.sync_cmd(["-data-list-register-names"], "done")
-            self._register_names = {}
-            for (reg_name, reg_num) in zip(result["register-names"], range(0, 10000)):
-                self._register_names[reg_name] = reg_num
+            self._register_names = dict(filter(lambda x: x[0] != "", zip(result["register-names"], range(0, 10000))))
 
         return self._register_names[reg]
 
