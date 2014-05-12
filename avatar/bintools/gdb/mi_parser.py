@@ -155,13 +155,13 @@ class Stream:
 
 
 def parse(string):
-    if string[0] in ['*', '+', '=']:
+    if string and string[0] in ['*', '+', '=']:
         msg = Async(string)
     
-    elif string[0] in ['~', '@', '&']:
+    elif string and string[0] in ['~', '@', '&']:
         msg = Stream(string)
     
-    elif string[0].isdigit():
+    elif string and string[0].isdigit():
         msg = Result(string)
     
     else:
