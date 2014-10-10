@@ -131,7 +131,7 @@ class S2EEmulator(Emulator):
             while count != 0:
                 try:
                     log.debug("Trying to connect to emulator.")
-                    self._gdb_interface.connect(("tcp", "localhost", "%d" % self._configuration.get_s2e_gdb_port()))
+                    self._gdb_interface.connect(("tcp", "127.0.0.1", "%d" % self._configuration.get_s2e_gdb_port()))
                     break
                 except:
                     count -= 1
