@@ -239,12 +239,15 @@ class S2EConfiguration():
         
         assert("architecture" in self._cm_configuration) #Architecture must be specified
         assert("cpu_model" in self._cm_configuration) #CPU must be specified
-        assert("entry_address" in self._cm_configuration) #Entry address must be specified
+        assert("entry_address" in self._cm_configuration or "elf_executable" in self._cm_configuration) #Entry address must be specified
         assert("memory_map" in self._cm_configuration and self._cm_configuration["memory_map"]) #Memory map must be specified
         
         cm_conf["architecture"] = self._cm_configuration["architecture"]
         cm_conf["cpu_model"] = self._cm_configuration["cpu_model"]
-        cm_conf["entry_address"] = self._cm_configuration["entry_address"]
+        if "entry_address" in self._cm_configuration:
+            cm_conf["entry_address"] = self._cm_configuration["entry_address"]
+        if "elf_executable" in self._cm_configuration:
+            cm_conf["elf_executable"] = self._cm_configuration["elf_executable"]
         if "init_state" in self._cm_configuration: #Initial state is optional
             cm_conf["init_state"] = self._cm_configuration["init_state"]
         cm_conf["memory_map"] = []
