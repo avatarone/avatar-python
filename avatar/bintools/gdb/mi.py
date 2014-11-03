@@ -27,7 +27,7 @@ class Debugger:
 
 class MIProtocolException(Exception):
     def __init__(self, message):
-        super(self, MIProtocolException).__init__(message)
+        super(MIProtocolException, self).__init__(message)
 
 class GDB(Thread):
     PROMPT = '(gdb)'
