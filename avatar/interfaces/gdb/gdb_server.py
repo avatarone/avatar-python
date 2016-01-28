@@ -38,7 +38,7 @@ class GdbServer:
                 self._low_level_protocol.send_message("".join(["%02x" % x for x in struct.pack("<%s" % {1: "B", 2: "H", 4: "L"}[size], value)]))
             else:
                 value = self._debuggable.read_untyped_memory(address, size)
-                self._low_level_protocol.send_message("".join(["%02x" for x in value]))
+                self._low_level_protocol.send_message("".join(["%02x" % x for x in value]))
         elif opcode == 'M':
             address_size = msg[1:].split(":")[0]
             address = address_size.split(",")[0]
