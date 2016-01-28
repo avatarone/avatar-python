@@ -87,6 +87,15 @@ class GdbserverTarget(Target):
     def get_register(self, reg):
         return self._gdb_interface.get_register(reg)
 
+    def get_register_from_nr(self, num):
+        try:
+            return self.get_register(["r0", "r1", "r2", "r3", "r4", "r5",
+                "r6", "r7", "r8", "r9", "r10",
+                "r11", "r12", "sp", "lr", "pc", "cpsr"][num])
+        except IndexError:
+            log.warn("get_register_from_nr called with unexpected register index %d", num)
+            return 0
+
     def execute_gdb_command(self, cmd):
         return self._gdb_interface.execute_gdb_command(cmd)
     def get_checksum(self, addr, size):
