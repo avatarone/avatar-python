@@ -43,7 +43,7 @@ class GdbServer:
             address_size = msg[1:].split(":")[0]
             address = address_size.split(",")[0]
             size = address_size.split(",")[1]
-            data = bytes([int(x, 16) for x in zip(*[iter(msg[1:].split(":")[1])] * 2)])
+            data = bytes([int("".join(x), 16) for x in zip(*[iter(msg[1:].split(":")[1])] * 2)])
             
             assert(len(data) == size)
             
