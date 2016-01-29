@@ -41,8 +41,8 @@ class GdbServer:
                 self._low_level_protocol.send_message("".join(["%02x" % x for x in value]))
         elif opcode == 'M':
             address_size = msg[1:].split(":")[0]
-            address = address_size.split(",")[0]
-            size = address_size.split(",")[1]
+            address = int(address_size.split(",")[0], 16)
+            size = int(address_size.split(",")[1], 16)
             data = bytes([int("".join(x), 16) for x in zip(*[iter(msg[1:].split(":")[1])] * 2)])
             
             assert(len(data) == size)
