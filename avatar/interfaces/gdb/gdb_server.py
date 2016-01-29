@@ -77,7 +77,8 @@ class GdbServer:
             self._low_level_protocol.send_message("".join(["%02x" % x for x in struct.pack("<L", value)]))
         elif opcode == 'P':
             regnr = int(msg[1:].split("=")[0], 16)
-            (value, ) = struct.unpack("<L", msg[1:].split("=")[1])
+            value_wrong_endianness = int(msg[1:].split("=")[1], 16)
+            value = struct.unpack("<L", struct.pack(">L", value_wrong_endianness))[0]
             self._debuggable.set_register(regnr, value) 
             self._low_level_protocol.send_message("OK")
         elif opcode == 'c':
