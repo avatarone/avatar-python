@@ -1,3 +1,12 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from builtins import super
+from builtins import str
+from builtins import object
+from future import standard_library
+standard_library.install_aliases()
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 from queue import Queue
@@ -11,7 +20,7 @@ from avatar.bintools.gdb.mi_parser import parse, Stream, Async, Result
 
 log = getLogger("GDB-MI")
 
-class Debugger:
+class Debugger(object):
     def handle_stream_msg(self, msg):
         if msg.type == Stream.CONSOLE:
             info(msg.string)

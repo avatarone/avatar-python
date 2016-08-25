@@ -3,8 +3,17 @@ Created on May 3, 2013
 
 @author: Jonas Zaddach <zaddach@eurecom.fr>
 '''
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import range
+from builtins import bytes
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 
-class Breakpoint():
+class Breakpoint(object):
     """This is an interface for breakpoints that are created by Debuggable.set_breakpoint"""
     def __init__(self):
         self._handler = None
@@ -22,7 +31,7 @@ class Breakpoint():
         self._handler = handler
         
 
-class Debuggable():
+class Debuggable(object):
     """This is an interface for all objects that support a minimal set of debugging operations"""
     def read_typed_memory(self, address, size):
         """Read a memory word with size <b>size</b> from memory address

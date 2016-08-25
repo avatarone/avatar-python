@@ -3,6 +3,17 @@ Created on May 2, 2013
 
 @author: Jonas Zaddach <zaddach@eurecom.fr>
 '''
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from builtins import super
+from builtins import chr
+from builtins import int
+from builtins import map
+from builtins import zip
+from future import standard_library
+standard_library.install_aliases()
 #!/usr/bin/env python3
 
 import socket
@@ -220,7 +231,7 @@ class GdbProtocol(object):
             resp = list(map(lambda x: int(x, 16), map("".join, zip(*[iter(resp)] * 2))))
         return resp
         
-    def write_memory(self, address: "int", value: "list(char)"):
+    def write_memory(self, address, value):
         self.send_message("M%x,%x:%s" % (address, len(value), "".join(map(lambda x: "%02x" % ord(x), value))))
         resp = self.receive_response()
         if len(resp) == 3 and resp[0] == 'E':
@@ -244,7 +255,7 @@ class GdbProtocol(object):
 
         self.breakpoints[address] = properties
         
-    def remove_breakpoint(self, address: "int"):
+    def remove_breakpoint(self, address):
         if address in self.breakpoints:
             del self.breakpoints[address]
         else:

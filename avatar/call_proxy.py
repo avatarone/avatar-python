@@ -3,10 +3,21 @@ Created on Jun 24, 2013
 
 @author: Jonas Zaddach <zaddach@eurecom.fr>
 '''
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import range
+from builtins import int
+from builtins import hex
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 
 from collections import defaultdict
 
-class EmulatorTargetCallProxy():
+class EmulatorTargetCallProxy(object):
     MONITOR_EVENTS = ["emulator_pre_read_request", 
                       "emulator_post_read_request",
                       "emulator_pre_write_request",
