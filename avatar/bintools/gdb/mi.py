@@ -65,6 +65,7 @@ class GDB(Thread):
         debug('[TX] %s' % cmd_str)
         t = self.token
         self.gdb.stdin.write(cmd_str + '\n')
+        self.gdb.stdin.flush()
         self.token += 1
         return t
     
