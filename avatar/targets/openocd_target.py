@@ -1,3 +1,11 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import str
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 from avatar.targets.target import Target
 import socket
 import logging
@@ -105,7 +113,7 @@ class OpenocdTarget(Target):
             log.info(out)
         return out
         
-    def put_raw_bp(self, addr : "str 0xNNNNNNNN", size : "int"):
+    def put_raw_bp(self, addr, size):
         """
         Put a breakpoint        
         :param addr: address literal in hexadecimal
@@ -116,7 +124,7 @@ class OpenocdTarget(Target):
 		# FIXME: hardcoded hw breakpoint
         self.raw_cmd("bp %s %d hw" % (addr, size))
 
-    def remove_raw_bp(self, addr : "str 0xNNNNNNNN"):
+    def remove_raw_bp(self, addr):
         """
         Remove a breakpoint        
         :param addr: address literal in hexadecimal
@@ -124,7 +132,7 @@ class OpenocdTarget(Target):
         """
         self.raw_cmd("rbp %s" % addr)
     
-    def get_raw_register(self, regname : "str")-> "str 0xNNNNNNNN":
+    def get_raw_register(self, regname):
         """
         Read a single register, allowed values within ARM_REGISTERS
         :param regname: register name (see ARM_REGISTERS)
@@ -137,7 +145,7 @@ class OpenocdTarget(Target):
         # XXX
         return value.split("\\")[0]
     
-    def initstate(self, cfg : "dict of str"):
+    def initstate(self, cfg):
         """ Change S2E configurable machine initial setup"""
         assert("machine_configuration" in cfg)
         self.get_output(2)
@@ -153,7 +161,7 @@ class OpenocdTarget(Target):
 ###################################################################
 
     @paused
-    def put_bp(self, addr : "str 0xNNNNNNNN"):
+    def put_bp(self, addr):
         """
         Pause the target, put a breakpoint, then resume it
         :param addr: address literal in hexadecimal
@@ -163,7 +171,7 @@ class OpenocdTarget(Target):
         self.raw_cmd("bp %s 2 hw" % addr)
     
     @paused
-    def remove_bp(self, addr : "str 0xNNNNNNNN"):
+    def remove_bp(self, addr):
         """
         Pause the target, remove a breakpoint, the resume it
         :param addr: address literal in hexadecimal
@@ -172,7 +180,7 @@ class OpenocdTarget(Target):
         self.remove_raw_bp(addr)
     
     @paused
-    def get_register(self, regname : "str") -> "str 0xNNNNNNNN":
+    def get_register(self, regname):
         """
         Pause the target, read a single register, then resume it
         :param regname: register name (allowed values within ARM_REGISTERS)
@@ -187,7 +195,7 @@ class OpenocdTarget(Target):
 ###################################################################
 
     @halted
-    def dump_all_registers(self)-> "dict{str: str 0xNNNNNNNN}":
+    def dump_all_registers(self):
         """
         Halt the target, loop over all available registers 
         and dump their content
@@ -210,7 +218,7 @@ class OpenocdTarget(Target):
 ###################################################################
         
     @classmethod
-    def from_str(cls, sockaddr_str: "str, proto:addr:port"):
+    def from_str(cls, sockaddr_str):
         """ Static factory """
         assert(sockaddr_str.startswith("tcp:"))
         sockaddr = (sockaddr_str[:sockaddr_str.rfind(":")],

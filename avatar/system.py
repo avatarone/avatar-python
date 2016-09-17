@@ -1,3 +1,11 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import str
+from builtins import object
+from future import standard_library
+standard_library.install_aliases()
 #from configuration.manager import ConfigurationManager
 #from interfaces.s2e_remote_memory import S2ERemoteMemoryInterface
 #from interfaces.avatar_protocol import AvatarProtocol
@@ -38,7 +46,7 @@ EVENT_RESPONSE_READ_MEMORY_VALUE = "EVENT_RESPONSE_READ_MEMORY_VALUE"
 EVENT_RESPONSE_WRITE_MEMORY_VALUE = "EVENT_RESPONSE_WRITE_MEMORY_VALUE"
 EVENT_SIGABRT = "EVENT_SIGABRT"
 
-class EventWaiter():
+class EventWaiter(object):
     def __init__(self, system):
         self._queue = Queue()
         self._system = system
@@ -53,7 +61,7 @@ class EventWaiter():
     def __del__(self):
         self._system.unregister_event_listener(self._queue_event)
 
-class System():
+class System(object):
     def __init__(self, configuration, create_emulator, create_target):
         self._configuration = configuration
         self._plugins = []

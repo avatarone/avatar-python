@@ -1,3 +1,10 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import object
+from future import standard_library
+standard_library.install_aliases()
 import threading
 import logging
 from queue import Queue, Empty
@@ -13,7 +20,7 @@ log = logging.getLogger(__name__)
 ASYNCHRONOUS_MESSAGES = ["AVATAR_RPC_DTH_STATE", "AVATAR_RPC_DTH_PAGEFAULT", "AVATAR_RPC_DTH_INFO_EXCEPTION"]
 RESPONSE_TIMEOUT = 10
 
-class AvatarProtocol():
+class AvatarProtocol(object):
     CONNECT_TIMEOUT = 10
     def __init__(self, sock, paging_handler = lambda x: None):
         #TODO: Put a meaningful timeout

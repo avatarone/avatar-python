@@ -1,3 +1,12 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from builtins import int
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from re import compile, search
 from avatar.bintools.gdb.parse_stream import ParseStream, ParseError
 
@@ -104,7 +113,7 @@ def parse_results(s):
     return results
 
 
-class Async:
+class Async(object):
     EXEC, STATUS, NOTIFY = 0, 1, 2
     MAP = {'*':0, '+':1, '=':2}
     PATTERN = compile('(?P<type>[\*\+=])(?P<class>[^,]+)(?P<results>,.+)?')
@@ -131,7 +140,7 @@ class Async:
         
 
 
-class Result:
+class Result(object):
     PATTERN = compile('(?P<token>\d+)\^(?P<class>done|running|connected|error|exit)(?P<results>,.+)?')
     
     def __init__(self, line):
@@ -145,7 +154,7 @@ class Result:
             self.results = parse_results(ParseStream(m.group('results')))
 
 
-class Stream:
+class Stream(object):
     CONSOLE, TARGET, ERROR_LOG = 0, 1, 2
     MAP = {'~':0, '@':1, '&':2}
     

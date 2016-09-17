@@ -1,3 +1,15 @@
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from builtins import dict
+from builtins import str
+from builtins import bytes
+from builtins import map
+from builtins import zip
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import struct
 from functools import reduce
 from avatar.interfaces.avatar_stub.avatar_exceptions import AvatarProtocolUnknownOpcodeException
@@ -231,7 +243,7 @@ MEMORY_MAP_FLAG_EXECUTE = 4 #Memory region is executable
 MEMORY_MAP_FLAG_PAGING = 8 #MEMORY_MAP_FLAG_PAGING signals that this memory region has an entry in the page table
 MEMORY_MAP_FLAG_TRACE = 0x10 #Accesses to this memory region should be recorded in the memory access trace buffer
 
-class AvatarMessage():
+class AvatarMessage(object):
     """
         Base class for all avatar protocol messages.
         Abstract class, should not be instantiated directly.

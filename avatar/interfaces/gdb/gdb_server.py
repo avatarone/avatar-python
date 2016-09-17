@@ -1,3 +1,14 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from builtins import str
+from builtins import int
+from builtins import bytes
+from builtins import zip
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from avatar.debuggable import Debuggable
 from avatar.interfaces.gdb.protocol_lowlevel import GdbLowlevelProtocol
 import socket
@@ -9,7 +20,7 @@ log = logging.getLogger(__name__)
 class InvalidChecksumException(Exception):
     pass     
 
-class GdbServer:
+class GdbServer(object):
     def __init__(self, debuggable, sock, system, verbose=False):
         self._verbose=verbose
         self._debuggable = debuggable
