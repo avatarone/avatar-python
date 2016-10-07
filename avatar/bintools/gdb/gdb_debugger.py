@@ -3,18 +3,6 @@ Created on Jul 1, 2013
 
 @author: Jonas Zaddach <zaddach@eurecom.fr>
 '''
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from builtins import int
-from builtins import dict
-from builtins import str
-from builtins import filter
-from builtins import zip
-from builtins import range
-from future import standard_library
-standard_library.install_aliases()
 from avatar.bintools.gdb.mi import GDB, Debugger
 import logging
 from avatar.bintools.gdb.mi_parser import Stream

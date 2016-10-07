@@ -1,13 +1,6 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
 
 
-class Crc8(object):
+class Crc8():
     """
         Implements the 1-wire CRC8 checksum.
         (The polynomial should be  X^8 + X^5 + X^4 + X^0)

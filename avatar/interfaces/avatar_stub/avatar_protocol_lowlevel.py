@@ -1,12 +1,3 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from builtins import str
-from builtins import bytes
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
 #!/usr/bin/env python3
 
 import threading 
@@ -20,7 +11,7 @@ from avatar.interfaces.avatar_stub.avatar_messages import parse_avatar_message
 
 log = logging.getLogger(__name__)
 
-class AvatarLowlevelProtocol(object):
+class AvatarLowlevelProtocol():
     """
         Encapsulates the communication between the avatar server and the 
         avatar stub.
