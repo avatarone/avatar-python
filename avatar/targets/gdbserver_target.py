@@ -14,11 +14,12 @@ from queue import Queue
 log = logging.getLogger(__name__)
 
 class GdbBreakpoint(Breakpoint):
-    def __init__(self, system, bkpt_num):
+    def __init__(self, system, bkpt_num, address):
         super().__init__()
         self._system = system
         self._bkpt_num = bkpt_num
         self._queue = Queue()
+        self.address = address
         system.register_event_listener(self._event_receiver)
         
     def wait(self, timeout = None):
@@ -108,7 +109,7 @@ class GdbserverTarget(Target):
         if "thumb" in properties:
             del properties["thumb"]
         bkpt = self._gdb_interface.insert_breakpoint(address, *properties)
-        return GdbBreakpoint(self._system, int(bkpt["bkpt"]["number"]))
+        return GdbBreakpoint(self._system, int(bkpt["bkpt"]["number"]), address)
         
     
     def cont(self):

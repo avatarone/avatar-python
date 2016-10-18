@@ -17,11 +17,12 @@ log = logging.getLogger(__name__)
 
 
 class S2EBreakpoint(Breakpoint):
-    def __init__(self, system, bkpt_num):
+    def __init__(self, system, bkpt_num, address):
         super().__init__()
         self._system = system
         self._bkpt_num = bkpt_num
         self._queue = Queue()
+        self.address = address
         system.register_event_listener(self._event_receiver)
         
     def wait(self, timeout = None):
@@ -167,7 +168,8 @@ class S2EEmulator(Emulator):
         if "thumb" in properties:
             del properties["thumb"]
         bkpt = self._gdb_interface.insert_breakpoint(address, *properties)
-        return S2EBreakpoint(self._system, int(bkpt["bkpt"]["number"]))
+        return S2EBreakpoint(self._system, int(bkpt["bkpt"]["number"]), address)
+
     def execute_gdb_command(self, cmd):
         return self._gdb_interface.execute_gdb_command(cmd)
         
